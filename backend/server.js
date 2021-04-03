@@ -15,6 +15,8 @@ app.use(express.json());
 
 // BASE-URL
 app.get('/', function (req, res) {
+  // searchService();
+  console.log("hello");
  return res.send('Search Results api');
 });
 
@@ -30,9 +32,7 @@ app.post('/api/user-query',function(req,res){
     const query={
         command : req.body.command
     }
-    console.log(query);
-    
-    // call here the ML script for processing the query
+    console.log(query); 
 
 })
 
