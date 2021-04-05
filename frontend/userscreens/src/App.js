@@ -4,8 +4,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-
 function App() {
+
   return (
     <React.Fragment>
       <AppBar position="static">
@@ -15,9 +15,9 @@ function App() {
           </Typography>
         </Toolbar>
       </AppBar>
-     <SpeechToText/>
+      <SpeechToText />
     </React.Fragment>
-      
+
   );
 }
 
