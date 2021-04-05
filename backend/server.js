@@ -1,3 +1,4 @@
+const service = require('./RedisSearchService');
 const express = require('express');
 const cors = require('cors');
 
@@ -15,8 +16,8 @@ app.use(express.json());
 
 // BASE-URL
 app.get('/', function (req, res) {
-  // searchService();
-  console.log("hello");
+  console.log("Server running");
+  service.searchService();
  return res.send('Search Results api');
 });
 

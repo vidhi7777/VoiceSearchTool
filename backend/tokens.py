@@ -1,4 +1,5 @@
 import nltk, requests
+nltk.download('stopwords')
 
 def get_tokens(cmd_string):
     tokenizer = nltk.tokenize.RegexpTokenizer('\w+')
@@ -19,3 +20,6 @@ def get_tokens(cmd_string):
 #     base_url=base_url+w+"-"
 
 # response = requests.get(base_url)
+
+query = input()
+get_tokens(query)
