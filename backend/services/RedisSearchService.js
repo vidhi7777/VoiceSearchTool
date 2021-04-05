@@ -2,11 +2,12 @@ const dotenv = require('dotenv');
 dotenv.config({ path: '/media/sushmita/New Volume/myntra/MyntraMate/backend/.env'})
 
 const redis = require("redis");
-const rediSearchClient = require('./index.js');
+const rediSearchClient = require('redisearchclient');
+const my_data = rediSearchClient(redis, 'myntra', { clientOptions: { port: 6379, host:"127.0.0.1", no_ready_check: true, password:process.env.REDIS_PASSWORD} });
+
 const dataset = require('../data/testData').dataset;
 const dp = require('../processor/DataProcessor');
 const ef = require('../processor/ExtractFields');
-const my_data = rediSearchClient(redis, 'myntra', { clientOptions: { port: 6379, host:"127.0.0.1", no_ready_check: true, password:process.env.REDIS_PASSWORD} });
 
 /**
  * This service uses REDISEARCH.
@@ -15,8 +16,6 @@ const my_data = rediSearchClient(redis, 'myntra', { clientOptions: { port: 6379,
  */
 
 const searchService = (query) => {
-
-
 
     const productList = dp.processData(dataset.data);
     const finalProducts = [];
