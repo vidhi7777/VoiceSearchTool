@@ -1,3 +1,4 @@
+const service = require('./services/RedisSearchService');
 const express = require('express');
 const cors = require('cors');
 
@@ -15,24 +16,20 @@ app.use(express.json());
 
 // BASE-URL
 app.get('/', function (req, res) {
-  // searchService();
-  console.log("hello");
- return res.send('Search Results api');
+    console.log("Server running");
+    return res.send('Search Results api');
 });
 
 // endpoint for returning results back to React server
 app.get('/api/results/',function(req,res){
-
-    // call here the ML script which returns the end search results.    
-
-})
-
-// endpoint for receiving data
-app.post('/api/user-query',function(req,res){
-    const query={
-        command : req.body.command
+  const query={
+      command : req.query.command
+  }
+    console.log("QueryString: ",query); 
+    if(query!==null || query!==""){
+      res.send(JSON.stringify(service.searchService(query.command)))
     }
-    console.log(query); 
+     res.send({"message":"Invalid query"})
 
 })
 

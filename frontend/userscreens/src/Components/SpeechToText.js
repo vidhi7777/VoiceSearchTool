@@ -5,6 +5,7 @@ import MicIcon from '@material-ui/icons/Mic';
 import ReplayIcon from '@material-ui/icons/Replay';
 import {Container,Box,TextField,Tooltip, Button} from '@material-ui/core';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
+import Speech from 'react-speech';
 
 const SpeechToText = React.memo(() => {
 
@@ -75,7 +76,12 @@ const SpeechToText = React.memo(() => {
             />
           </Tooltip>
         </Box>
-        <Button variant="contained"color="primary" className={styles.button}>Go!</Button>
+        <Button variant="contained"color="primary" className={styles.button}>Talk to MyntraMate
+          <Speech text="Hey there...I am your MyntraMate, how can I help you?" 
+          lang="en-US" 
+          voice="Daniel"
+          />
+        </Button>
       </Container>
   )
 });
