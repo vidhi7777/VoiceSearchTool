@@ -1,0 +1,23 @@
+.box{
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    max-width: 600px;
+    padding: 5px;
+}
+.container{
+    text-align: center;
+    margin : 100px auto;
+}
+
+.child1{
+    flex: 1.5;
+}
+.child2{
+    flex : 0.2;
+    cursor: pointer;
+}
+.button{
+    text-transform: lowercase;
+}
