@@ -6,6 +6,8 @@ function weather(filter_location ,filter_month){
     //const address = process.argv[2]
     const address = filter_location
 
+    var result
+
     if(!address){
         console.log('Please provide an address!')
     } else{
@@ -15,7 +17,7 @@ function weather(filter_location ,filter_month){
                 return console.log(error)
             }
             //forecast(data.latitude , data.longitude ,(error1,forecastData)=>{
-            forecast(latitude , longitude ,filter_month, (error1,forecastData)=>{
+            result = forecast(filter_location ,filter_month, (error1,forecastData)=>{
                 if(error1){
                     return console.log(error)
                 }
@@ -25,6 +27,7 @@ function weather(filter_location ,filter_month){
         
             })
         })
+    return result
     
     }
 

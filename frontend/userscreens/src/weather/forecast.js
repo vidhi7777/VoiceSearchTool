@@ -36,24 +36,42 @@ function getMonthFromString(mon){
     //request({url:url , json:true} , (error,response) => {
     request(options  , (error,response, body) => {
         if(error){
-            console.log ('Unable to connect to weather services!')
+
+          console.log('Unable to connect to weather services!')
+          return ('Unable to connect to weather services!')
+
         } else if(body.error){
+
           console.log('Unable to find location. Try another search.')
+          return ('Unable to find location. Try another search.')
+
         } else{
+
           const temp = JSON.parse(body).locations[options.qs.location].values[0].temp
-	        console.log(temp)
-          console.log(JSON.parse(body).locations[options.qs.location].values[0].conditions)
+	        console.log("Temperature:"+temp)
+          const conditions = JSON.parse(body).locations[options.qs.location].values[0].conditions
+          console.log("Conditions:"+conditions)
+          const season 
           if(temp<=60){
-            console.log('Winter')
+            season = "Winter"
           } else if(temp<76 && temp>60){
-            console.log('Fall')
+            season = "Fall"
           } else if(temp>=76 && temp>87){
-            console.log('Spring')
+            season = "Spring"
           } else{
-            console.log('Summer')
+            season = "Summer"
           }
+          console.log("Season:"+season)
         }
     })
+
+    const result = {
+      temperature : temp ,
+      condition : conditions ,
+      season : season
+    }
+
+    return result;
 }    
 
 module.exports = forecast

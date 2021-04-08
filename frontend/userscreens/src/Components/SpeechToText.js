@@ -69,7 +69,7 @@ const SpeechToText = React.memo(() => {
 
       user_filter.push(transcript)
 
-      weather(user_filter[0],user_filter[1])
+      const result = weather(user_filter[0],user_filter[1])
 
       handleFilterApply();
   }
