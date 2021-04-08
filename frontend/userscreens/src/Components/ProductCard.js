@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProductCard({ title, brand, variant_price, images , link, product_details}) {
+export default function ProductCard(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
 
@@ -39,17 +39,11 @@ export default function ProductCard({ title, brand, variant_price, images , link
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image={images}
+          image={props.image}
         />
         <CardContent>
           <Typography variant="body2">
-            {title}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {brand}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {"Rs." + variant_price + "/-"}
+            {props.title}
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -58,7 +52,7 @@ export default function ProductCard({ title, brand, variant_price, images , link
           <FavoriteIcon />
         </IconButton>
         <IconButton aria-label="share item">
-          <ShareIcon url={link}/>
+          <ShareIcon url="{link}"/>
         </IconButton>
         <IconButton
           className={clsx(classes.expand, {
@@ -77,7 +71,7 @@ export default function ProductCard({ title, brand, variant_price, images , link
         <CardContent>
           <Typography paragraph>Details:</Typography>
           <Typography paragraph>
-          {product_details}
+          {props.body}
           </Typography>
           </CardContent>
           </Collapse>
