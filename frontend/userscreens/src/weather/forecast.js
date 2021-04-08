@@ -1,15 +1,25 @@
 const request = require('postman-request')
 
-const forecast = (latitude , longitude , callback ) => {
+const forecast = (filter_location ,filter_month, callback ) => {
+
+const month = getMonthFromString(filter_month)
+
+function getMonthFromString(mon){
+  var months = [
+      "january","february","march","april","may","june","july","august","september","october","november","december"
+  ]
+  console.log(months.indexOf(mon) + 1)
+  return (months.indexOf(mon) + 1)
+}
 
   const options = {
     method: 'GET',
     url: 'https://visual-crossing-weather.p.rapidapi.com/history',
     qs: {
-      startDateTime: '2020-04-08T00:00:00',
+      startDateTime: '2020-'+month+'-15T00:00:00',
       aggregateHours: '24',
-      location: 'goa,india',
-      endDateTime: '2020-04-08T00:00:00',
+      location: filter_location,
+      endDateTime: '2020-'+month+'-15T00:00:00',
       unitGroup: 'us',
       dayStartTime: '8:00:00',
       contentType: 'json',
