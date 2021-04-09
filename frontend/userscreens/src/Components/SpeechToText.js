@@ -30,41 +30,45 @@ const useStyles = makeStyles((theme) => ({
 
 const SpeechToText = React.memo(() => {
 
-  const { transcript, resetTranscript} = useSpeechRecognition();
+  const userQuery = [];
+  const classes = useStyles();
   const [micOn , setMic] = useState(false);
+  const [items, setItems] = useState(null);
   const [filterOn, setFilter] = useState(false);
   const [fetched, setFetched] = useState(false);
-  const [voiceText , setText ] = useState("Hey there,  I am your myntra Mate...how can I help you")
-  const classes = useStyles();
+  const [filterFetched ,setFilterFetched] = useState(false);
+  const [filterItems, setFilterItems] = useState(null);
+  const { transcript, resetTranscript} = useSpeechRecognition();
+  const [voiceText , setText ] = useState("Hey there,  I am your myntra Mate...how can I help you");
 
   useEffect(() => {
     console.log("Started");
     //this is supposed to make the autoclick happen onload
-    document.getElementsByClassName("rs-play").click();
+    // document.getElementsByClassName("rs-play").click();
   }, []);
-
-  var items;
-  var filter_items;
-  var user_query = []
 
   if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
     return null
   }
 
   function doOnFilter(){
+
+      setFilter(true);
+
       setText("Please tell the location..")
-      document.getElementById('liveOnLoad').click();
+      // document.getElementById('liveOnLoad').click();
       
-      //here timeout of 10 seconds
+      setTimeout(function(){
+        userQuery.push(transcript);
+      },6000)
 
       setText("Please tell the location..")
-      document.getElementById('liveLoad').click();
+      // document.getElementById('liveLoad').click();
 
-      handleFilterApply();
-  }
+      setTimeout(function(){
+        userQuery.push(transcript);
+      },6000)
 
-  function handleFilterApply(){
-    setFilter(true);
   }
 
   function handleFilterRemove(){
@@ -83,8 +87,8 @@ const SpeechToText = React.memo(() => {
         handleSearch();
       }
       else{
-        user_query = [...user_query,transcript]
-        handleFilterSearch(user_query.toString());
+        userQuery.push(transcript)
+        handleFilterSearch(userQuery.toString());
       }
       
     }
@@ -92,16 +96,15 @@ const SpeechToText = React.memo(() => {
 
   }
 
-  function handleFilterSearch(user_query){
-    if(user_query !== null && user_query !== ""){
+  function handleFilterSearch(userQuery){
+    if(userQuery !== null && userQuery !== ""){
       const url = "http://127.0.0.1:8080/api/weatherfilter/results";
-      const data = {command : user_query}
+      const data = {command : userQuery}
       axios.get(url, {
         params:data
       }).then(response => {
-        filter_items = JSON.parse(response.results);
+        setFilterItems(JSON.parse(response).results);
         setFetched(true);
-        console.log(filter_items);
       }).catch(error => {
         console.log(error.response)
       })
@@ -110,18 +113,19 @@ const SpeechToText = React.memo(() => {
 
   function handleSearch() {
     console.log(transcript);
-    user_query = [...user_query,transcript];
+    userQuery.push(transcript);
     if(transcript !== null && transcript !== ""){
       const url = "http://127.0.0.1:8080/api/results";
       const data = {command : transcript}
       axios.get(url, {
         params:data
       }).then(response => {
-        items = JSON.parse(response.results);
+        console.log(response);
+        setItems(response.data.results);
         setFetched(true);
         console.log(items);
       }).catch(error => {
-        console.log(error.response)
+        console.log(error)
       })
     }
   }
@@ -170,18 +174,16 @@ const SpeechToText = React.memo(() => {
               onClick={doOnFilter}
             />
           </Tooltip>
-
-          <Button variant="contained" id="liveOnLoad" color="primary" className={styles.button}>Talk to MyntraMate
+        </Box>
+        <Button variant="contained" id="liveOnLoad" color="primary" className={styles.button}>Talk to MyntraMate
               <Speech text={voiceText}
               lang="en-US"
               displayText = "Launch the Bot"
               voice="Microsoft Zira Desktop - English (United States)"
             />
           </Button>
-
-        </Box>
       </Container>
-      { fetched &&(
+      { filterFetched && filterOn &&(
           <div>
           <Modal
             aria-labelledby="transition-modal-title"
@@ -197,13 +199,17 @@ const SpeechToText = React.memo(() => {
           >
             <Fade in={filterOn}>
               <div className={classes.paper}>
-                  <ProductsSwiper pro_list = {filter_items}/>
+                  <ProductsSwiper items = {filterItems}/>
               </div>
             </Fade>
           </Modal>
-          <ProductContainer pro_list = {items}/>
       </div>
       )}
+      {
+        fetched && (
+          <ProductContainer items = {items}/>
+        )
+      }
     </React.Fragment>
   );
 })
