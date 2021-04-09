@@ -13,6 +13,8 @@ import FilterDramaIcon from '@material-ui/icons/FilterDrama';
 import ProductsSwiper from './ProductsSwiper';
 import ProductContainer from './ProductContainer';
 import Speech from 'react-speech';
+import weather from '../weather/app.js';
+
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -46,19 +48,28 @@ const SpeechToText = React.memo(() => {
   var items;
   var filter_items;
   var user_query = []
+  var user_filter = []
 
   if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
     return null
   }
 
   function doOnFilter(){
-      setText("Please tell the location..")
+      setText("Please tell the location where you want to go..")
       document.getElementById('liveOnLoad').click();
       
       //here timeout of 10 seconds
 
-      setText("Please tell the location..")
+      user_filter.push(transcript)
+
+      setText("Please tell the time when you want to go..")
       document.getElementById('liveLoad').click();
+
+      //here timeout of 10 seconds
+
+      user_filter.push(transcript)
+
+      const result = weather(user_filter[0],user_filter[1])
 
       handleFilterApply();
   }
