@@ -4,7 +4,7 @@ const pyClient = require('./runToken');
 const dotenv = require('dotenv');
 dotenv.config()
 const { RedisSearchService } = require('./services/RedisSearchService');
-const { response } = require('express');
+const words = require('./utils/SimilarWords').words;
 
 const app = express();
 
@@ -24,27 +24,43 @@ app.get('/', function (req, res) {
     return res.send('Search Results api');
 });
 
+var similar_words ;
+
 // endpoint for returning results back to React server
 app.get('/api/results/', async (req,res)=> {
    
-    console.log(req.query.command);
+    const output = await pyClient.run(req.query.command);
+    var tokenList = output.split(" ");
 
-    // const output = await pyClient.run(req.query.command);
-
-    // console.log(output)
+    console.log(tokenList);
 
     const searchObj = new RedisSearchService();
-    await new Promise(function(resolve,reject){
-      resolve(searchObj.searchService("white shirt and pants"));
-    }).then((results)=>{
+
+    tokenList = tokenList.slice(0,tokenList.length - 1)
+
+    console.log(tokenList);
+
+    tokenList.forEach(async (keyword) => {
+      keyword = keyword.trim()
+      await new Promise(function(resolve,reject){
+        resolve(searchObj.searchService(keyword));
+      }).then((results)=>{
+        if(results === [] || results === undefined ){
+            similar_words = words[keyword];
+            console.log(similar_words);
+            res.send({"results":null , "options":similar_words})
+        }
+        else{
           console.log(results);
-          res.send({"results": results});
+          res.send({"results": results , "options":null})
+        }
+      })
     })
+
 })
 
-app.get('api/weatherfilter/results',async(req,res)=>{
-
-    const output = await run(req.query.command);
+app.get('/api/weatherfilter/results/',async(req,res)=>{
+  
     const searchObj = new RedisSearchService();
     await new Promise(function(resolve,reject){
       resolve(searchObj.searchService(req.query.command));
@@ -52,7 +68,6 @@ app.get('api/weatherfilter/results',async(req,res)=>{
           console.log(results);
           res.send({"results": results});
     })
-
 
 })
 

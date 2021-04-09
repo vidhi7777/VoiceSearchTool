@@ -33,6 +33,9 @@ function getMonthFromString(mon){
     }
   };
 
+    var temp = null;
+    var season = null;
+    var conditions = null;
     //request({url:url , json:true} , (error,response) => {
     request(options  , (error,response, body) => {
         if(error){
@@ -47,11 +50,12 @@ function getMonthFromString(mon){
 
         } else{
 
-          const temp = JSON.parse(body).locations[options.qs.location].values[0].temp
+          temp = JSON.parse(body).locations[options.qs.location].values[0].temp
 	        console.log("Temperature:"+temp)
-          const conditions = JSON.parse(body).locations[options.qs.location].values[0].conditions
+          conditions = JSON.parse(body).locations[options.qs.location].values[0].conditions
           console.log("Conditions:"+conditions)
-          const season 
+        
+
           if(temp<=60){
             season = "Winter"
           } else if(temp<76 && temp>60){
@@ -66,9 +70,9 @@ function getMonthFromString(mon){
     })
 
     const result = {
-      temperature : temp ,
-      condition : conditions ,
-      season : season
+      "temperature" : temp ,
+      "condition" : conditions ,
+      "season" : season
     }
 
     return result;

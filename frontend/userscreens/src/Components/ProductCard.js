@@ -14,6 +14,16 @@ import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({
+  media: {
+    height: 200,
+    paddingTop: '56.25%', // 16:9
+  },
+  root: {
+    maxWidth: 345,
+    flexGrow:1,
+    marginBottom : 10,
+    marginTop : 10,
+  },
   expand: {
     transform: 'rotate(0deg)',
     marginLeft: 'auto',
@@ -35,11 +45,11 @@ export default function ProductCard(props) {
   };
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.root}>
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image={props.image}
+          image = {props.image}
         />
         <CardContent>
           <Typography variant="body2">

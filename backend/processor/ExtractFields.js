@@ -7,7 +7,7 @@
     var arr = results.map(item => {
         return {
             title : item.doc.title,
-            images : item.doc.images,
+            images : item.doc.images.split(","),
             body : item.doc.body,
         }
     });
