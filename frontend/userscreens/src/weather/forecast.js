@@ -3,6 +3,9 @@ const request = require('postman-request')
 const forecast = (filter_location ,filter_month, callback ) => {
 
 const month = getMonthFromString(filter_month)
+const season = "" 
+const temp=0
+const conditions = ""
 
 function getMonthFromString(mon){
   var months = [
@@ -54,8 +57,12 @@ function getMonthFromString(mon){
 	        console.log("Temperature:"+temp)
           conditions = JSON.parse(body).locations[options.qs.location].values[0].conditions
           console.log("Conditions:"+conditions)
+<<<<<<< Updated upstream
         
 
+=======
+          
+>>>>>>> Stashed changes
           if(temp<=60){
             season = "Winter"
           } else if(temp<76 && temp>60){
