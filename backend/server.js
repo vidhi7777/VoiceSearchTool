@@ -59,7 +59,7 @@ app.get('/api/results/', async (req,res)=> {
 
 })
 
-app.get('api/weatherfilter/results',async(req,res)=>{
+app.get('/api/weatherfilter/results/',async(req,res)=>{
   
     const searchObj = new RedisSearchService();
     await new Promise(function(resolve,reject){
