@@ -7,12 +7,12 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import MicIcon from '@material-ui/icons/Mic';
 import ReplayIcon from '@material-ui/icons/Replay';
-import { Container, Box, TextField, Tooltip, Button } from '@material-ui/core';
+import { Container, Box, TextField, Tooltip, Button, Typography } from '@material-ui/core';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import FilterDramaIcon from '@material-ui/icons/FilterDrama';
 import ProductsSwiper from './ProductsSwiper';
 import ProductContainer from './ProductContainer';
-import Speech from 'react-speech';
+import weather from '../weather/app.js';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -21,10 +21,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   paper: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: "white",
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+    width : 700
   },
 }));
 
@@ -39,56 +40,65 @@ const SpeechToText = React.memo(() => {
   const [filterFetched ,setFilterFetched] = useState(false);
   const [filterItems, setFilterItems] = useState(null);
   const { transcript, resetTranscript} = useSpeechRecognition();
-  const [voiceText , setText ] = useState("Hey there,  I am your myntra Mate...how can I help you");
+  const [voiceText , setText ] = useState("Hey there,  I am your MyntraMate...how can I help you ?");
 
   useEffect(() => {
     console.log("Started");
-    //this is supposed to make the autoclick happen onload
-    // document.getElementsByClassName("rs-play").click();
-  }, []);
+  }, [items,filterItems]);
+
 
   if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
     return null
   }
 
   function doOnFilter(){
-
+      resetTranscript();
       setFilter(true);
 
-      setText("Please tell the location..")
-      // document.getElementById('liveOnLoad').click();
       
-      setTimeout(function(){
-        userQuery.push(transcript);
-      },6000)
-
-      setText("Please tell the location..")
-      // document.getElementById('liveLoad').click();
+      setMic(true);
+      setText("Please tell the place or location..")
 
       setTimeout(function(){
-        userQuery.push(transcript);
-      },6000)
+        setMic(false);
+        setText("Please tell the time..")
+        resetTranscript();
+        setMic(true);
+      },8000);
+
+      setTimeout(function(){
+        setMic(false);
+      },8000)
+
+      var n = userQuery.length;
+      console.log("ARGS_WEATHER: ",userQuery[n-2],userQuery[n-1])
+      const result = weather(userQuery[n-2],userQuery[n-1])
+      console.log(result);
+
+      // handleFilterSearch("wedding");
 
   }
 
   function handleFilterRemove(){
     setFilter(false);
+    setFilterFetched(false);
   }
 
   function handleMicState(){
     if(!micOn){
       console.log("Listening");
+      setText("Listening...Speak now");
       SpeechRecognition.startListening({continuous:true});
     }
     else {
+      userQuery.push(transcript);
       SpeechRecognition.stopListening();
       console.log("Stopped Listening");
       if(!filterOn){
         handleSearch();
       }
       else{
-        userQuery.push(transcript)
-        handleFilterSearch(userQuery.toString());
+        // handleFilterSearch("summer");
       }
       
     }
@@ -103,16 +113,17 @@ const SpeechToText = React.memo(() => {
       axios.get(url, {
         params:data
       }).then(response => {
-        setFilterItems(JSON.parse(response).results);
-        setFetched(true);
+        setFilterItems(response.data.results);
+        setFilterFetched(true);
       }).catch(error => {
-        console.log(error.response)
+        console.log(error)
       })
     }
   }
 
   function handleSearch() {
     console.log(transcript);
+    setText("Good things take time...Please wait");
     userQuery.push(transcript);
     if(transcript !== null && transcript !== ""){
       const url = "http://127.0.0.1:8080/api/results";
@@ -123,6 +134,7 @@ const SpeechToText = React.memo(() => {
         console.log(response);
         setItems(response.data.results);
         setFetched(true);
+        setText("Here I have got..this for you!!");
         console.log(items);
       }).catch(error => {
         console.log(error)
@@ -175,16 +187,11 @@ const SpeechToText = React.memo(() => {
             />
           </Tooltip>
         </Box>
-        <Button variant="contained" id="liveOnLoad" color="primary" className={styles.button}>Talk to MyntraMate
-              <Speech text={voiceText}
-              lang="en-US"
-              displayText = "Launch the Bot"
-              voice="Microsoft Zira Desktop - English (United States)"
-            />
-          </Button>
+        <Fade in={true}>
+          <Typography className={styles.button} variant="h4" component="h2">{voiceText}</Typography>
+        </Fade>
       </Container>
       { filterFetched && filterOn &&(
-          <div>
           <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
@@ -197,20 +204,18 @@ const SpeechToText = React.memo(() => {
               timeout: 500,
             }}
           >
-            <Fade in={filterOn}>
-              <div className={classes.paper}>
-                  <ProductsSwiper items = {filterItems}/>
-              </div>
-            </Fade>
-          </Modal>
-      </div>
+            <div className={classes.paper}>
+                  <ProductsSwiper  conditon={"Haze Cloudy"} season ={"summer"} items = {filterItems}/>
+            </div>
+        </Modal>
       )}
       {
         fetched && (
-          <ProductContainer items = {items}/>
+          <ProductContainer  items = {items}/>
         )
       }
     </React.Fragment>
   );
 })
+
 export default SpeechToText;

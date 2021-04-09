@@ -21,7 +21,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
     flexGrow:1,
-    marginBottom : 20
+    marginBottom : 10,
+    marginTop : 10,
   },
   expand: {
     transform: 'rotate(0deg)',
